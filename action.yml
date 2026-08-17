@@ -39,6 +39,10 @@ inputs:
     description: "How many contributors to show in the contribution area. Use a number, 0, or all."
     required: false
     default: "20"
+  show-all-languages:
+    description: "Whether to show all languages in the contribution area"
+    required: false
+    default: "false"
   repository:
     description: "Repository to analyze. Defaults to the current repository."
     required: false
@@ -65,6 +69,8 @@ runs:
         INPUT_GITHUB_TOKEN: ${{ inputs.github-token }}
         INPUT_MINOR_CONTRIBUTORS_LIMIT: ${{ inputs.minor-contributors-limit }}
         INPUT_SHOW_CONTRIBUTORS_LIMIT: ${{ inputs.show-contributors-limit }}
+        INPUT_SHOW_ALL_LANGUAGES: ${{ inputs.show-all-languages }}
+        INPUT_SHOW_ALL_LANGUAGES: ${{ inputs.show-all-languages }}
         INPUT_REPOSITORY: ${{ inputs.repository }}
         INPUT_BRANCH: ${{ inputs.branch }}
         GITHUB_TOKEN: ${{ github.token }}

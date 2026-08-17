@@ -52,6 +52,13 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(config.repository, "owner/project")
         self.assertEqual(config.branch, "release/v1")
 
+    def test_load_config_parses_show_all_languages(self):
+        self.assertFalse(load_config({}).show_all_languages)
+        self.assertFalse(load_config({"INPUT_SHOW_ALL_LANGUAGES": "false"}).show_all_languages)
+        self.assertFalse(load_config({"INPUT_SHOW_ALL_LANGUAGES": "0"}).show_all_languages)
+        self.assertTrue(load_config({"INPUT_SHOW_ALL_LANGUAGES": "true"}).show_all_languages)
+        self.assertTrue(load_config({"INPUT_SHOW_ALL_LANGUAGES": "1"}).show_all_languages)
+
 
 class GitBlameHelperTests(unittest.TestCase):
     def test_language_detection(self):
@@ -105,6 +112,36 @@ class SvgRendererTests(unittest.TestCase):
         self.assertIn("2 non-empty blamed lines", svg)
         self.assertIn("Octo", svg)
         self.assertIn("Python", svg)
+
+    def test_generate_svg_show_all_languages(self):
+        langs = {
+            ("Python", "#3572A5"): 30,
+            ("Go", "#00ADD8"): 20,
+            ("Rust", "#DEA584"): 15,
+            ("C++", "#F34B7D"): 10,
+            ("JavaScript", "#F1E05A"): 8,
+            ("TypeScript", "#3178C6"): 7,
+            ("Shell", "#89E051"): 5,
+            ("Ruby", "#701516"): 5,
+        }
+        stats = {"Octo": {"total": 100, "langs": langs, "avatar": None}}
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = os.path.join(tmpdir, "all.svg")
+            generate_svg(stats, 100, output, 900, "Code Stats", 0.8, 22, 10, True)
+            svg = Path(output).read_text(encoding="utf-8")
+
+        for name, _color in langs:
+            self.assertIn(name, svg)
+        self.assertNotIn("Other", svg)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = os.path.join(tmpdir, "summary.svg")
+            generate_svg(stats, 100, output, 900, "Code Stats", 0.8, 22, 10)
+            svg = Path(output).read_text(encoding="utf-8")
+
+        self.assertNotIn("Ruby", svg)
+        self.assertIn("Other", svg)
 
 
 class MainEntryTests(unittest.TestCase):

@@ -143,6 +143,7 @@ def main():
         config.min_percent,
         config.minor_contributors_limit,
         config.show_contributors_limit,
+        config.show_all_languages,
         target_repository,
     )
     warn(f"generated {config.output}")

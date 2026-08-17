@@ -19,6 +19,7 @@ class AppConfig:
     branch: str
     ignore_patterns: list[str]
     raw_users: str
+    show_all_languages: bool = False
 
 
 def parse_optional_limit(raw_value, default=10):
@@ -49,6 +50,15 @@ def parse_float(raw_value, default):
         return default
 
 
+def parse_bool(raw_value, default=False):
+    value = str(raw_value or "").strip().lower()
+    if value in ("1", "true", "yes", "on"):
+        return True
+    if value in ("0", "false", "no", "off"):
+        return False
+    return default
+
+
 def load_config(environ=None):
     environ = environ or os.environ
     raw_ignore = environ.get("INPUT_IGNORE", "")
@@ -65,6 +75,9 @@ def load_config(environ=None):
         ),
         show_contributors_limit=parse_optional_limit(
             environ.get("INPUT_SHOW_CONTRIBUTORS_LIMIT", 10), default=10
+        ),
+        show_all_languages=parse_bool(
+            environ.get("INPUT_SHOW_ALL_LANGUAGES", ""), default=False
         ),
         repository=environ.get("INPUT_REPOSITORY", ""),
         branch=environ.get("INPUT_BRANCH", ""),
