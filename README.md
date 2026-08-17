@@ -97,3 +97,4 @@ After generation, reference the SVG in your README:
 | `github-token` | empty | Token used to resolve commit SHA to GitHub account/avatar. |
 | `minor-contributors-limit` | `22` | How many minor contributors below min-percent to show |
 | `show-contributors-limit` | `10` | How many contributors to show in the contribution area |
+| `show-all-languages` | `false` | Show every language for each contributor instead of summarizing into the top ones plus "Other" |

@@ -23,10 +23,16 @@ def approx_text_width(text, font_size=13, bold=False):
     return int(len(text) * font_size * factor)
 
 
-def summarize_languages(lang_counter, total, max_items=6, min_percent=2.0):
+def summarize_languages(lang_counter, total, max_items=6, min_percent=2.0, show_all=False):
     items = sorted(lang_counter.items(), key=lambda x: x[1], reverse=True)
     shown = []
     other_count = 0
+
+    if show_all:
+        for (lang_name, color), count in items:
+            pct = count / total * 100 if total else 0
+            shown.append((lang_name, color, count, pct))
+        return shown
 
     for (lang_name, color), count in items:
         pct = count / total * 100 if total else 0
@@ -129,12 +135,14 @@ def limit_rows(rows, show_contributors_limit):
     return rows[:show_contributors_limit], rows[show_contributors_limit:]
 
 
-def build_visible_layout(visible, bar_width):
+def build_visible_layout(visible, bar_width, show_all_languages=False):
     layout_info = []
     total_height = 0
 
     for user, data, percent in visible:
-        lang_items = summarize_languages(data["langs"], data["total"], max_items=6, min_percent=2.0)
+        lang_items = summarize_languages(
+            data["langs"], data["total"], max_items=6, min_percent=2.0, show_all=show_all_languages
+        )
         legend_rows = wrap_legend_items(lang_items, max_width=bar_width)
         row_h = max(44, 18 + 18 + len(legend_rows) * 22) + 26
         layout_info.append((user, data, percent, lang_items, legend_rows, row_h))
@@ -260,6 +268,7 @@ def generate_svg(
     min_percent,
     minor_contributors_limit,
     show_contributors_limit,
+    show_all_languages=False,
     repository="",
 ):
     margin = 32
@@ -276,7 +285,7 @@ def generate_svg(
     visible, overflow_rows = limit_rows(full_rows, show_contributors_limit)
     hidden = overflow_rows + minor_rows
     hidden_title = "Other contributors" if overflow_rows else f"Contributors below {min_percent}%"
-    layout_info, visible_height = build_visible_layout(visible, bar_width)
+    layout_info, visible_height = build_visible_layout(visible, bar_width, show_all_languages)
     total_height = (
         header_h
         + 18
