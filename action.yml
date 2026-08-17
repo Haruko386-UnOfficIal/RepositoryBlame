@@ -70,7 +70,6 @@ runs:
         INPUT_MINOR_CONTRIBUTORS_LIMIT: ${{ inputs.minor-contributors-limit }}
         INPUT_SHOW_CONTRIBUTORS_LIMIT: ${{ inputs.show-contributors-limit }}
         INPUT_SHOW_ALL_LANGUAGES: ${{ inputs.show-all-languages }}
-        INPUT_SHOW_ALL_LANGUAGES: ${{ inputs.show-all-languages }}
         INPUT_REPOSITORY: ${{ inputs.repository }}
         INPUT_BRANCH: ${{ inputs.branch }}
         GITHUB_TOKEN: ${{ github.token }}
